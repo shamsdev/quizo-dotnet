@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizoDotnet", "QuizoDotnet\QuizoDotnet.csproj", "{64C36F77-A81D-45BB-AEE1-E505682804AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizoDotnet.Domain", "QuizoDotnet.Domain\QuizoDotnet.Domain.csproj", "{510C905F-89D2-42CD-B4E8-AC1AE9D83FA4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizoDotnet.Infrastructure", "QuizoDotnet.Infrastructure\QuizoDotnet.Infrastructure.csproj", "{E3C4F7F7-DABA-458D-87AD-86C09660EF37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizoDotnet.Application", "QuizoDotnet.Application\QuizoDotnet.Application.csproj", "{3174B7EF-996B-4666-A35D-CF177576258E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{64C36F77-A81D-45BB-AEE1-E505682804AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64C36F77-A81D-45BB-AEE1-E505682804AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64C36F77-A81D-45BB-AEE1-E505682804AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64C36F77-A81D-45BB-AEE1-E505682804AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{510C905F-89D2-42CD-B4E8-AC1AE9D83FA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{510C905F-89D2-42CD-B4E8-AC1AE9D83FA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{510C905F-89D2-42CD-B4E8-AC1AE9D83FA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{510C905F-89D2-42CD-B4E8-AC1AE9D83FA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3C4F7F7-DABA-458D-87AD-86C09660EF37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3C4F7F7-DABA-458D-87AD-86C09660EF37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3C4F7F7-DABA-458D-87AD-86C09660EF37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3C4F7F7-DABA-458D-87AD-86C09660EF37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3174B7EF-996B-4666-A35D-CF177576258E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3174B7EF-996B-4666-A35D-CF177576258E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3174B7EF-996B-4666-A35D-CF177576258E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3174B7EF-996B-4666-A35D-CF177576258E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

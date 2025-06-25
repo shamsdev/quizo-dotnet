@@ -1,0 +1,6 @@
+@QuizoDotnet_HostAddress = http://localhost:5005
+
+GET {{QuizoDotnet_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
