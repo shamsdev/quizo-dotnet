@@ -5,5 +5,5 @@ namespace QuizoDotnet.Application.Interfaces.Repositories.Users;
 
 public interface IUserRepository : IRepository<User>
 {
-    public Task<User?> Get(long id, string password, bool asNoTracking = false);
+    public Task<User?> Get(long id, string password, bool includeProfile = true, bool asNoTracking = false);
 }

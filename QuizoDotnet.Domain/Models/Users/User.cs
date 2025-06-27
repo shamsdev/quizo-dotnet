@@ -12,7 +12,7 @@ public class User : BaseEntity
 
     [Column("last_login_at")] public DateTimeOffset? LastLoginDate { get; private set; }
 
-    public UserProfile? UserProfile { get; set; }
+    public UserProfile UserProfile { get; set; } = null!;
 
     public void UpdateLastLogin()
     {

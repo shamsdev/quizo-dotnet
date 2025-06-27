@@ -5,13 +5,13 @@ using KarizmaPlatform.Core.Database;
 namespace QuizoDotnet.Domain.Models.Users;
 
 [Table("user_profiles")]
-public class UserProfile(long userId, string avatar, string? displayName = null) : BaseEntity
+public class UserProfile : BaseEntity
 {
-    [Column("user_id"), Required] public long UserId { get; set; } = userId;
-    [Column("avatar"), MaxLength(20)] public string? Avatar { get; set; } = avatar;
+    [Column("user_id"), Required] public long UserId { get; init; }
+    [Column("avatar"), MaxLength(20)] public string Avatar { get; set; }
 
     [Column("display_name"), MaxLength(20)]
-    public string? DisplayName { get; set; } = displayName;
+    public string? DisplayName { get; set; }
 
     public User? User { get; set; }
 }

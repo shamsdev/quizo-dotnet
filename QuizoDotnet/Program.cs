@@ -1,5 +1,6 @@
 using KarizmaPlatform.Connection.Server.Extensions;
 using Microsoft.OpenApi.Models;
+using QuizoDotnet.Application.Extensions;
 using QuizoDotnet.Extensions;
 using QuizoDotnet.Infrastructure.Extensions;
 
@@ -21,6 +22,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddServices();
 
 var app = builder.Build();
 app.ConfigureCors();
