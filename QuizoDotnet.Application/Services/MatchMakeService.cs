@@ -1,8 +1,13 @@
 using System.Collections.Concurrent;
+using QuizoDotnet.Application.Instances;
+using QuizoDotnet.Application.Interfaces;
+using QuizoDotnet.Application.Managers;
 
 namespace QuizoDotnet.Application.Services;
 
-public class MatchMakeService
+public class MatchMakeService(
+    IServiceProvider serviceProvider,
+    IClientCallService clientCallService)
 {
     private record Requester(long UserId, string ConnectionId);
 
@@ -17,7 +22,6 @@ public class MatchMakeService
             return; // Already in pool
 
         Console.WriteLine($"[MatchMakeService] User with Id '{requester.UserId}' joined match-make.");
-
         TryMatchMake();
     }
 
@@ -45,14 +49,27 @@ public class MatchMakeService
                 matchMakingPool.TryRemove(player1.UserId, out _);
                 matchMakingPool.TryRemove(player2.UserId, out _);
 
-                StartMatch(player1, player2);
+                CreateGame(player1, player2);
             }
         }
     }
 
-    private void StartMatch(Requester r1, Requester r2)
+    private void CreateGame(Requester r1, Requester r2)
     {
-        Console.WriteLine($"[MatchMakeService] Matched '{r1.UserId}' with '{r2.UserId}'. Starting match ...");
-        // TODO: Your match starting logic
+        Console.WriteLine($"[MatchMakeService] Matched '{r1.UserId}' with '{r2.UserId}'. Creating game ...");
+
+        var u1 = new GameUserInstance
+        {
+            UserId = r1.UserId,
+            ConnectionId = r1.ConnectionId
+        };
+
+        var u2 = new GameUserInstance
+        {
+            UserId = r2.UserId,
+            ConnectionId = r2.ConnectionId
+        };
+
+        GameManager.CreateGame(serviceProvider, clientCallService, u1, u2);
     }
 }
