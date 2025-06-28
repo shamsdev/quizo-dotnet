@@ -9,8 +9,9 @@ public class GameMakeRequestHandler(GameService gameService) : BaseRequestHandle
 {
     private long UserId => ConnectionContext.GetAuthorizationId<long>();
 
-    [Action("set-init-ready")]
-    public void SetInitialReady()
+    [Action("set-ready")]
+    public void SetReady()
     {
+        gameService.SetReady(UserId);
     }
 }

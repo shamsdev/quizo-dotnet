@@ -11,7 +11,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<TokenService>()
             .AddScoped<UserService>()
             .AddSingleton<MatchMakeService>()
-            .AddTransient<GameService>()
+            .AddSingleton<GameService>()
             ;
 
         return services;

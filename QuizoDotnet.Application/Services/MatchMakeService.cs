@@ -1,13 +1,9 @@
 using System.Collections.Concurrent;
 using QuizoDotnet.Application.Instances;
-using QuizoDotnet.Application.Interfaces;
-using QuizoDotnet.Application.Managers;
 
 namespace QuizoDotnet.Application.Services;
 
-public class MatchMakeService(
-    IServiceProvider serviceProvider,
-    IClientCallService clientCallService)
+public class MatchMakeService(GameService gameService)
 {
     private record Requester(long UserId, string ConnectionId);
 
@@ -70,6 +66,6 @@ public class MatchMakeService(
             ConnectionId = r2.ConnectionId
         };
 
-        GameManager.CreateGame(serviceProvider, clientCallService, u1, u2);
+        gameService.CreateGame(u1, u2);
     }
 }
