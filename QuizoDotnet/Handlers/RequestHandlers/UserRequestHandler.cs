@@ -2,7 +2,6 @@ using KarizmaPlatform.Connection.Core.Exceptions;
 using KarizmaPlatform.Connection.Server.Attributes;
 using KarizmaPlatform.Connection.Server.Base;
 using QuizoDotnet.Application.Services;
-using QuizoDotnet.Domain.Models.Users;
 using QuizoDotnet.DTOs;
 
 namespace QuizoDotnet.Handlers.RequestHandlers;

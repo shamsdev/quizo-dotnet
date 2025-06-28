@@ -11,6 +11,7 @@ public static class ServiceCollectionExtensions
         services
             .AddSingleton<TokenService>()
             .AddScoped<UserService>()
+            .AddSingleton<MatchMakeService>()
             ;
 
         return services;
