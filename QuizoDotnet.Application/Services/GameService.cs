@@ -11,15 +11,23 @@ public class GameService(
     private readonly ConcurrentDictionary<Guid, GameInstance> gamesPool = new();
     private readonly ConcurrentDictionary<long, Guid> userGamesPool = new();
 
-    public void CreateGame(GameUserInstance u1, GameUserInstance u2)
+    public async Task CreateGame(GameUserInstance u1, GameUserInstance u2)
     {
         var gameGuid = Guid.NewGuid();
-        var gameInstance = new GameInstance(serviceProvider, callService, gameGuid, u1, u2);
+
+        var gameInstance = new GameInstance(serviceProvider,
+            callService,
+            gameGuid,
+            u1,
+            u2);
 
         if (!gamesPool.TryAdd(gameGuid, gameInstance)
             || !userGamesPool.TryAdd(u1.UserId, gameGuid)
             || !userGamesPool.TryAdd(u2.UserId, gameGuid))
+        {
+            gameInstance.ForceClose();
             throw new Exception($"Error adding game with GUID '{gameGuid}' to the pool.");
+        }
 
         gameInstance.Start();
     }
@@ -31,9 +39,15 @@ public class GameService(
         return gameInstance;
     }
 
-    public void SetReady(long userId)
+    public void UserReady(long userId)
     {
         var userGame = GetUserGameInstance(userId);
-        userGame!.SetReady(userId);
+        userGame!.UserReady(userId);
+    }
+
+    public void UserAnswer(long userId, long answerId)
+    {
+        var userGame = GetUserGameInstance(userId);
+        userGame!.UserAnswer(userId, answerId);
     }
 }
