@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using QuizoDotnet.Infrastructure;
@@ -11,9 +12,11 @@ using QuizoDotnet.Infrastructure;
 namespace QuizoDotnet.Infrastructure.Migrations
 {
     [DbContext(typeof(QuizoDatabase))]
-    partial class QuizoDatabaseModelSnapshot : ModelSnapshot
+    [Migration("20250703143348_AddGameModels")]
+    partial class AddGameModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
