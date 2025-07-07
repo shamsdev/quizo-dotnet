@@ -11,7 +11,7 @@ public class GameService(
     private readonly ConcurrentDictionary<Guid, GameInstance> gamesPool = new();
     private readonly ConcurrentDictionary<long, Guid> userGamesPool = new();
 
-    public async Task CreateGame(GameUserInstance u1, GameUserInstance u2)
+    public void CreateGame(GameUserInstance u1, GameUserInstance u2)
     {
         var gameGuid = Guid.NewGuid();
 
@@ -32,6 +32,18 @@ public class GameService(
         gameInstance.Start();
     }
 
+    public void RemoveUser(long userId)
+    {
+        userGamesPool.TryGetValue(userId, out var gameGuid);
+        if (gamesPool.TryGetValue(gameGuid, out var gameInstance))
+        {
+            gameInstance.RemoveUser(userId);
+            gamesPool.TryRemove(gameGuid, out _);
+        }
+
+        userGamesPool.TryRemove(userId, out _);
+    }
+
     private GameInstance? GetUserGameInstance(long userId)
     {
         userGamesPool.TryGetValue(userId, out var gameGuid);
@@ -42,7 +54,7 @@ public class GameService(
     public void UserReady(long userId)
     {
         var userGame = GetUserGameInstance(userId);
-        userGame!.UserReady(userId);
+        userGame?.UserReady(userId);
     }
 
     public void UserAnswer(long userId, long answerId)

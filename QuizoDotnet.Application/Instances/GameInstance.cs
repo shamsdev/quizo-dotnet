@@ -21,13 +21,13 @@ public class GameInstance(
     private List<Question>? questions;
     private int MaxRounds => questions!.Count;
 
-    private CancellationTokenSource questionTimeDelaySource = new();
+    private CancellationTokenSource tasksCancellationTokenSource = new();
 
     #region Delays and Times
 
     private const int StartRoundDelay = 2 * 1000;
     private const int ShowResultsDelay = 5 * 1000;
-    private const int QuestionTime = 20 * 1000;
+    private const int QuestionTime = 5 * 1000;
 
     #endregion
 
@@ -74,7 +74,6 @@ public class GameInstance(
             await clientCallService.Send(user.ConnectionId, MatchStartCommand, sendBody);
         }
 
-        RequestGetReady();
         //TODO should implement a timeout for players ready and start round
     }
 
@@ -98,6 +97,12 @@ public class GameInstance(
         using var scope = serviceProvider.CreateScope();
         var questionRepository = scope.ServiceProvider.GetRequiredService<IQuestionRepository>();
         questions = await questionRepository.GetRandomQuestions(5);
+    }
+
+    public void RemoveUser(long userId)
+    {
+        gameUsers.Remove(userId);
+        ForceClose();
     }
 
     public void UserReady(long userId)
@@ -127,7 +132,7 @@ public class GameInstance(
             if (opponent.IsAnswered)
             {
                 Console.WriteLine($"[GameInstance | {guid}] All users are answered. Showing result ...");
-                questionTimeDelaySource.Cancel();
+                tasksCancellationTokenSource.Cancel();
             }
         }
     }
@@ -139,7 +144,17 @@ public class GameInstance(
 
     private async void StartRound()
     {
-        await Task.Delay(StartRoundDelay);
+        foreach (var user in gameUsers.Values)
+            user.SetReady(false);
+
+        try
+        {
+            await Task.Delay(StartRoundDelay, tasksCancellationTokenSource.Token);
+        }
+        catch (Exception ex)
+        {
+            return;
+        }
 
         var question = questions![roundIndex];
         var data = new
@@ -157,19 +172,25 @@ public class GameInstance(
             RoundNumber
         };
 
-        foreach (var user in gameUsers.Values)
-        {
-            user.SetReady(false);
-            await clientCallService.Send(user.ConnectionId, StartRoundCommand, data);
-        }
-
+        SendAll(StartRoundCommand, data);
         RoundTimer();
     }
 
     private async void RoundTimer()
     {
         Console.WriteLine($"[GameInstance | Round timer started.");
-        await Task.Delay(QuestionTime, questionTimeDelaySource.Token);
+        try
+        {
+            await Task.Delay(QuestionTime, tasksCancellationTokenSource.Token);
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (Exception)
+        {
+            return;
+        }
+
         RoundResult();
     }
 
@@ -184,6 +205,7 @@ public class GameInstance(
         {
             if (user.IsAnswered && user.AnswerId == correctAnswerId)
                 user.AddScore();
+            user.SetAnswer(null);
         }
 
         //Create data body
@@ -202,7 +224,14 @@ public class GameInstance(
         //Send Data
         SendAll(RoundResultCommand, data);
 
-        await Task.Delay(ShowResultsDelay);
+        try
+        {
+            await Task.Delay(ShowResultsDelay, tasksCancellationTokenSource.Token);
+        }
+        catch (Exception e)
+        {
+            return;
+        }
 
         roundIndex++;
         if (roundIndex >= MaxRounds)
@@ -212,11 +241,12 @@ public class GameInstance(
 
     private void GameFinish()
     {
+        
         Console.WriteLine($"[GameInstance | Game finished.");
     }
 
     public void ForceClose(string reason = null)
     {
-        throw new NotImplementedException();
+        tasksCancellationTokenSource.Dispose();
     }
 }

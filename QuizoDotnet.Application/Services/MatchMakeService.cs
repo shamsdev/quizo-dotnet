@@ -66,6 +66,6 @@ public class MatchMakeService(GameService gameService)
             ConnectionId = r2.ConnectionId
         };
 
-        _ = gameService.CreateGame(u1, u2);
+        gameService.CreateGame(u1, u2);
     }
 }
