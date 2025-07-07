@@ -25,7 +25,7 @@ public class GameService(
             || !userGamesPool.TryAdd(u1.UserId, gameGuid)
             || !userGamesPool.TryAdd(u2.UserId, gameGuid))
         {
-            gameInstance.ForceClose();
+            gameInstance.GameClose();
             throw new Exception($"Error adding game with GUID '{gameGuid}' to the pool.");
         }
 

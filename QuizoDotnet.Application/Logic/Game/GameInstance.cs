@@ -179,16 +179,16 @@ public class GameInstance
     private void GameFinish()
     {
         Console.WriteLine($"[GameInstance | {gameState.Guid}] Game finished.");
+        GameClose();
     }
 
     public void RemoveUser(long userId)
     {
         gameState.GameUsers.Remove(userId);
-        ForceClose();
+        GameClose();
     }
-
-
-    public void ForceClose()
+    
+    public void GameClose()
     {
         gameTimerService.DisposeTimer();
     }
