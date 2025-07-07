@@ -8,7 +8,7 @@ namespace QuizoDotnet.Domain.Models.Users;
 public class UserProfile : BaseEntity
 {
     [Column("user_id"), Required] public long UserId { get; init; }
-    [Column("avatar"), MaxLength(20)] public string Avatar { get; set; }
+    [Column("avatar"), MaxLength(20)] public string Avatar { get; set; } = null!;
 
     [Column("display_name"), MaxLength(20)]
     public string? DisplayName { get; set; }

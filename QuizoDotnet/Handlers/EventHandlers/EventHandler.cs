@@ -11,14 +11,16 @@ public class EventHandler(
 {
     private long UserId => ConnectionContext.GetAuthorizationId<long>();
 
-    public override async Task OnConnected()
+    public override Task OnConnected()
     {
         logger.LogInformation($"Connection {ConnectionContext.ConnectionId} connected.");
+        return Task.CompletedTask;
     }
 
-    public override async Task OnDisconnected(Exception? exception)
+    public override Task OnDisconnected(Exception? exception)
     {
         logger.LogInformation($"Connection {ConnectionContext.ConnectionId} disconnected.");
         gameService.RemoveUser(UserId);
+        return Task.CompletedTask;
     }
 }

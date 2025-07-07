@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
-using QuizoDotnet.Application.Instances;
 using QuizoDotnet.Application.Interfaces;
+using QuizoDotnet.Application.Logic.Game;
 
 namespace QuizoDotnet.Application.Services;
 
@@ -11,7 +11,7 @@ public class GameService(
     private readonly ConcurrentDictionary<Guid, GameInstance> gamesPool = new();
     private readonly ConcurrentDictionary<long, Guid> userGamesPool = new();
 
-    public void CreateGame(GameUserInstance u1, GameUserInstance u2)
+    public void CreateGame(GameUser u1, GameUser u2)
     {
         var gameGuid = Guid.NewGuid();
 
@@ -29,7 +29,7 @@ public class GameService(
             throw new Exception($"Error adding game with GUID '{gameGuid}' to the pool.");
         }
 
-        gameInstance.Start();
+        gameInstance.GameStart();
     }
 
     public void RemoveUser(long userId)

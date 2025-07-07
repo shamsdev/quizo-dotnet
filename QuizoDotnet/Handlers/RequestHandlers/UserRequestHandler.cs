@@ -49,7 +49,7 @@ public class UserRequestHandler(
                 UserId = user.Id,
                 UserProfile = new UserProfileDto
                 {
-                    Avatar = user.UserProfile.Avatar!,
+                    Avatar = user.UserProfile.Avatar,
                     DisplayName = user.UserProfile.DisplayName
                 }
             }

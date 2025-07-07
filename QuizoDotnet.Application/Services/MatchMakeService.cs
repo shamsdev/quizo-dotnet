@@ -1,5 +1,5 @@
 using System.Collections.Concurrent;
-using QuizoDotnet.Application.Instances;
+using QuizoDotnet.Application.Logic.Game;
 
 namespace QuizoDotnet.Application.Services;
 
@@ -54,13 +54,13 @@ public class MatchMakeService(GameService gameService)
     {
         Console.WriteLine($"[MatchMakeService] Matched '{r1.UserId}' with '{r2.UserId}'. Creating game ...");
 
-        var u1 = new GameUserInstance
+        var u1 = new GameUser
         {
             UserId = r1.UserId,
             ConnectionId = r1.ConnectionId
         };
 
-        var u2 = new GameUserInstance
+        var u2 = new GameUser
         {
             UserId = r2.UserId,
             ConnectionId = r2.ConnectionId

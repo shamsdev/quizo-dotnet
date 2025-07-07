@@ -1,6 +1,6 @@
-namespace QuizoDotnet.Application.Instances;
+namespace QuizoDotnet.Application.Logic.Game;
 
-public class GameUserInstance
+public class GameUser
 {
     public long UserId { get; init; }
     public string ConnectionId { get; init; } = null!;
