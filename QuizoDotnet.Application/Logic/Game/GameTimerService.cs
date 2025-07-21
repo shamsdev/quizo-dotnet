@@ -17,6 +17,8 @@ public class GameTimerService
 
     public async void ScheduleJobAsync(int delay, Func<Task> job)
     {
+        CancelTimer();
+
         try
         {
             await Task.Delay(delay, CancellationTokenSource.Token);

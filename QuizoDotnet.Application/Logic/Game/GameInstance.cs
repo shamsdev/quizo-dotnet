@@ -17,7 +17,8 @@ public class GameInstance
 
     private const int RoundCount = 2;
     private const int StartRoundDelayMs = 2 * 1000;
-    private const int ShowResultsDelayMs = 5 * 1000;
+    private const int ShowResultDelayMs = 2 * 1000;
+    private const int ShowResultDurationMs = 3 * 1000;
     private const int RoundTimeMs = 5 * 1000;
 
     #endregion
@@ -45,7 +46,7 @@ public class GameInstance
         foreach (var user in gameState.GameUsers.Values)
         {
             var opponent = gameState.GameUsers.Values.First(x => x.UserId != user.UserId);
-            var opponentProfile = await gameDataService.GetUserProfile(opponent.UserId);
+            var opponentProfile = await gameDataService.GetUserProfile(opponent);
 
             var sendBody = new
             {
@@ -64,7 +65,6 @@ public class GameInstance
         }
     }
 
-
     public void UserReady(long userId)
     {
         lock (gameLock)
@@ -77,23 +77,6 @@ public class GameInstance
             {
                 Console.WriteLine($"[GameInstance | {gameState.Guid}] All users are ready. Starting rounds ...");
                 gameTimerService.ScheduleJobAsync(StartRoundDelayMs, RoundStart);
-            }
-        }
-    }
-
-    public void UserAnswer(long userId, long answerId)
-    {
-        lock (gameLock)
-        {
-            gameState.GameUsers[userId].SetAnswer(answerId);
-
-            Console.WriteLine(
-                $"[GameInstance | {gameState.Guid}] User with Id '{userId}' answered with id '{answerId}'.");
-            var opponent = gameState.GameUsers.Values.First(x => x.UserId != userId);
-            if (opponent.IsAnswered)
-            {
-                Console.WriteLine($"[GameInstance | {gameState.Guid}] All users are answered. Showing result ...");
-                gameTimerService.CancelTimer();
             }
         }
     }
@@ -127,9 +110,27 @@ public class GameInstance
         return Task.CompletedTask;
     }
 
+    public void UserAnswer(long userId, long answerId)
+    {
+        lock (gameLock)
+        {
+            gameState.GameUsers[userId].SetAnswer(answerId);
+
+            Console.WriteLine(
+                $"[GameInstance | {gameState.Guid}] User with Id '{userId}' answered with id '{answerId}'.");
+
+            var opponent = gameState.GameUsers.Values.First(x => x.UserId != userId);
+            if (opponent.IsAnswered)
+            {
+                Console.WriteLine($"[GameInstance | {gameState.Guid}] All users are answered.");
+                gameTimerService.ScheduleJobAsync(ShowResultDelayMs, RoundResult);
+            }
+        }
+    }
+
     private Task RoundResult()
     {
-        Console.WriteLine($"[GameInstance | {gameState.Guid}] Bell Ringed! round {gameState.RoundNumber} result.");
+        Console.WriteLine($"[GameInstance | {gameState.Guid}] Round {gameState.RoundNumber} result.");
 
         //Calculating answers
         var question = gameState.Questions![gameState.RoundIndex];
@@ -158,7 +159,7 @@ public class GameInstance
         gameBroadcaster.SendRoundResult(data);
 
         //Finish Round
-        gameTimerService.ScheduleJobAsync(ShowResultsDelayMs, RoundFinish);
+        gameTimerService.ScheduleJobAsync(ShowResultDurationMs, RoundFinish);
 
         return Task.CompletedTask;
     }
@@ -187,7 +188,7 @@ public class GameInstance
         gameState.GameUsers.Remove(userId);
         GameClose();
     }
-    
+
     public void GameClose()
     {
         gameTimerService.DisposeTimer();

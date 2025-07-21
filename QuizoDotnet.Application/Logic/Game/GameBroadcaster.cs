@@ -1,4 +1,5 @@
 using QuizoDotnet.Application.Interfaces;
+using QuizoDotnet.Application.Logic.Game.Bot;
 
 namespace QuizoDotnet.Application.Logic.Game;
 
@@ -13,16 +14,24 @@ public class GameBroadcaster(IClientCallService clientCallService, GameState gam
 
     #endregion
 
+    private void Send(GameUser user, string address, object body)
+    {
+        if (user is BotGameUser botUser)
+            botUser.Receive(address, body);
+        else
+            clientCallService.Send(user.ConnectionId, address, body);
+    }
+
     private void SendAll(string address, object body)
     {
         foreach (var user in gameState.GameUsers.Values)
-            clientCallService.Send(user.ConnectionId, address, body);
+            Send(user, address, body);
     }
 
     public void SendMatchStart(object body, long userId)
     {
         var user = gameState.GameUsers[userId];
-        clientCallService.Send(user.ConnectionId, MatchStartCommand, body);
+        Send(user, MatchStartCommand, body);
     }
 
     public void RequestGetReady()

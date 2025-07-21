@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using QuizoDotnet.Application.Logic.Game;
+using QuizoDotnet.Application.Logic.Game.Bot;
 
 namespace QuizoDotnet.Application.Services;
 
@@ -10,9 +11,17 @@ public class MatchMakeService(GameService gameService)
     private readonly ConcurrentDictionary<long, Requester> matchMakingPool = new();
     private readonly object matchMakingLock = new();
 
+    private const bool UseBot = true;
+
     public void Join(long userId, string connectionId)
     {
         var requester = new Requester(userId, connectionId);
+
+        if (UseBot)
+        {
+            CreateBotGame(requester);
+            return;
+        }
 
         if (!matchMakingPool.TryAdd(userId, requester))
             return; // Already in pool
@@ -67,5 +76,24 @@ public class MatchMakeService(GameService gameService)
         };
 
         gameService.CreateGame(u1, u2);
+    }
+
+    private void CreateBotGame(Requester requester)
+    {
+        Console.WriteLine($"[MatchMakeService] Matched '{requester.UserId}' with bot. Creating game ...");
+
+        var user = new GameUser
+        {
+            UserId = requester.UserId,
+            ConnectionId = requester.ConnectionId
+        };
+
+        var bot = new BotGameUser
+        {
+            UserId = -requester.UserId,
+            ConnectionId = Guid.NewGuid().ToString()
+        };
+
+        gameService.CreateGame(user, bot);
     }
 }
