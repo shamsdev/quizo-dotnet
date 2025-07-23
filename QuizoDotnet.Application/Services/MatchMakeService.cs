@@ -11,7 +11,7 @@ public class MatchMakeService(GameService gameService)
     private readonly ConcurrentDictionary<long, Requester> matchMakingPool = new();
     private readonly object matchMakingLock = new();
 
-    private const bool UseBot = true;
+    private const bool UseBot = false;
 
     public void Join(long userId, string connectionId)
     {

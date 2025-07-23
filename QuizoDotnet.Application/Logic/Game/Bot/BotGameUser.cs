@@ -1,3 +1,4 @@
+using QuizoDotnet.Application.DTOs.Game;
 using QuizoDotnet.Application.Services;
 
 namespace QuizoDotnet.Application.Logic.Game.Bot;
@@ -41,7 +42,12 @@ public class BotGameUser : GameUser
 
     private Task OnStartRound(object body)
     {
-        Console.WriteLine("[Bot] OnStartRound", body);
+        Console.WriteLine("[Bot] OnStartRound");
+
+        var dto = body as RoundStartDto;
+        var answer = dto!.Question.Answers[new Random().Next(dto.Question.Answers.Count)];
+        gameService.UserAnswer(UserId, answer.Id);
+
         return Task.CompletedTask;
     }
 

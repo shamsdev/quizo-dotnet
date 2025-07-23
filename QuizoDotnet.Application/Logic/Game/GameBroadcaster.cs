@@ -1,3 +1,4 @@
+using QuizoDotnet.Application.DTOs.Game;
 using QuizoDotnet.Application.Interfaces;
 using QuizoDotnet.Application.Logic.Game.Bot;
 
@@ -24,13 +25,13 @@ public class GameBroadcaster(IClientCallService clientCallService, GameState gam
 
     private void SendAll(string address, object body)
     {
-        foreach (var user in gameState.GameUsers.Values)
+        foreach (var user in gameState.GameUsersDict.Values)
             Send(user, address, body);
     }
 
-    public void SendMatchStart(object body, long userId)
+    public void SendMatchStart(MatchStartDto body, long userId)
     {
-        var user = gameState.GameUsers[userId];
+        var user = gameState.GameUsersDict[userId];
         Send(user, MatchStartCommand, body);
     }
 
@@ -39,12 +40,12 @@ public class GameBroadcaster(IClientCallService clientCallService, GameState gam
         SendAll(GetReadyCommand, new { gameState.RoundNumber });
     }
 
-    public void SendRoundStart(object data)
+    public void SendRoundStart(RoundStartDto data)
     {
         SendAll(StartRoundCommand, data);
     }
 
-    public void SendRoundResult(object data)
+    public void SendRoundResult(RoundResultDto data)
     {
         SendAll(RoundResultCommand, data);
     }

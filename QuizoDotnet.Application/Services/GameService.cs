@@ -15,18 +15,29 @@ public class GameService(
     {
         var gameGuid = Guid.NewGuid();
 
-        var gameInstance = new GameInstance(serviceProvider,
+        var gameInstance = new GameInstance(
+            this,
+            serviceProvider,
             callService,
             gameGuid,
             u1,
             u2);
 
-        if (!gamesPool.TryAdd(gameGuid, gameInstance)
-            || !userGamesPool.TryAdd(u1.UserId, gameGuid)
-            || !userGamesPool.TryAdd(u2.UserId, gameGuid))
+        try
+        {
+            if (!gamesPool.TryAdd(gameGuid, gameInstance))
+                throw new Exception($"Error adding game with GUID '{gameGuid}' to the pool.");
+
+            if (!userGamesPool.TryAdd(u1.UserId, gameGuid))
+                throw new Exception($"Error adding user with Id '{u1.UserId}' to the pool.");
+
+            if (!userGamesPool.TryAdd(u2.UserId, gameGuid))
+                throw new Exception($"Error adding user with Id '{u2.UserId}' to the pool.");
+        }
+        catch (Exception ex)
         {
             gameInstance.GameClose();
-            throw new Exception($"Error adding game with GUID '{gameGuid}' to the pool.");
+            throw;
         }
 
         gameInstance.GameStart();
@@ -35,15 +46,20 @@ public class GameService(
     public void RemoveUser(long userId)
     {
         userGamesPool.TryRemove(userId, out var gameGuid);
-        if (gamesPool.TryGetValue(gameGuid, out var gameInstance))
+        gamesPool.TryGetValue(gameGuid, out var gameInstance);
+        gameInstance!.RemoveUser(userId);
+    }
+
+    public void DisposeGame(GameInstance gameInstance)
+    {
+        foreach (var user in gameInstance.GameUsers)
         {
-            gameInstance.RemoveUser(userId);
-            
-            foreach (var user in gameInstance.GameUsers)
-                userGamesPool.TryRemove(user.UserId, out _);
-            
-            gamesPool.TryRemove(gameGuid, out _);
+            var removeUserResult = userGamesPool.TryRemove(user.UserId, out _);
+            Console.WriteLine($"[GameService] Try Remove User {user.UserId} from pool. Result: {removeUserResult}");
         }
+
+        var removeGameResult = gamesPool.TryRemove(gameInstance.Guid, out _);
+        Console.WriteLine($"[GameService] Try Remove Game {gameInstance.Guid} from pool. Result: {removeGameResult}");
     }
 
     private GameInstance? GetUserGameInstance(long userId)

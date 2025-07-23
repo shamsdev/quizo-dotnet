@@ -1,8 +1,8 @@
 using KarizmaPlatform.Connection.Core.Exceptions;
 using KarizmaPlatform.Connection.Server.Attributes;
 using KarizmaPlatform.Connection.Server.Base;
+using QuizoDotnet.Application.DTOs;
 using QuizoDotnet.Application.Services;
-using QuizoDotnet.DTOs;
 
 namespace QuizoDotnet.Handlers.RequestHandlers;
 
