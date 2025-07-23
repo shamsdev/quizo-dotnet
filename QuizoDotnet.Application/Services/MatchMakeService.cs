@@ -88,7 +88,7 @@ public class MatchMakeService(GameService gameService)
             ConnectionId = requester.ConnectionId
         };
 
-        var bot = new BotGameUser
+        var bot = new BotGameUser(gameService)
         {
             UserId = -requester.UserId,
             ConnectionId = Guid.NewGuid().ToString()

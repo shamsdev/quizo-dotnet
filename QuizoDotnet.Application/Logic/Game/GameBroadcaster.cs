@@ -7,10 +7,10 @@ public class GameBroadcaster(IClientCallService clientCallService, GameState gam
 {
     #region Commands
 
-    private const string MatchStartCommand = "match/start";
-    private const string GetReadyCommand = "match/get-ready";
-    private const string StartRoundCommand = "match/start-round";
-    private const string RoundResultCommand = "match/round-result";
+    public const string MatchStartCommand = "match/start";
+    public const string GetReadyCommand = "match/get-ready";
+    public const string StartRoundCommand = "match/start-round";
+    public const string RoundResultCommand = "match/round-result";
 
     #endregion
 

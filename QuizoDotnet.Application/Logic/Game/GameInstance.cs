@@ -23,6 +23,8 @@ public class GameInstance
 
     #endregion
 
+    public GameUser[] GameUsers => gameState.GameUsers.Values.ToArray();
+
     public GameInstance(
         IServiceProvider serviceProvider,
         IClientCallService clientCallService,
@@ -185,12 +187,15 @@ public class GameInstance
 
     public void RemoveUser(long userId)
     {
+        Console.WriteLine($"[GameInstance | {gameState.Guid}] User {userId} removed.");
         gameState.GameUsers.Remove(userId);
+        //TODO send opponent finish data
         GameClose();
     }
 
     public void GameClose()
     {
+        Console.WriteLine($"[GameInstance | {gameState.Guid}] Game closed.");
         gameTimerService.DisposeTimer();
     }
 }

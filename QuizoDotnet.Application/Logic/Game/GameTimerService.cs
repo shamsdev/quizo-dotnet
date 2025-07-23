@@ -2,26 +2,27 @@ namespace QuizoDotnet.Application.Logic.Game;
 
 public class GameTimerService
 {
-    private CancellationTokenSource CancellationTokenSource { get; } = new();
+    private CancellationTokenSource? cancellationTokenSource;
 
     public void CancelTimer()
     {
-        CancellationTokenSource.Cancel();
+        cancellationTokenSource?.Cancel();
     }
 
     public void DisposeTimer()
     {
         CancelTimer();
-        CancellationTokenSource.Dispose();
+        cancellationTokenSource?.Dispose();
     }
 
     public async void ScheduleJobAsync(int delay, Func<Task> job)
     {
         CancelTimer();
+        cancellationTokenSource = new CancellationTokenSource();
 
         try
         {
-            await Task.Delay(delay, CancellationTokenSource.Token);
+            await Task.Delay(delay, cancellationTokenSource.Token);
             await job();
         }
         catch (OperationCanceledException)
