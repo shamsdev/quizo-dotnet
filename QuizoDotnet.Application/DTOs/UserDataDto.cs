@@ -1,4 +1,4 @@
-namespace QuizoDotnet.DTOs;
+namespace QuizoDotnet.Application.DTOs;
 
 public class UserDataDto
 {
