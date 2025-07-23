@@ -34,14 +34,16 @@ public class GameService(
 
     public void RemoveUser(long userId)
     {
-        userGamesPool.TryGetValue(userId, out var gameGuid);
+        userGamesPool.TryRemove(userId, out var gameGuid);
         if (gamesPool.TryGetValue(gameGuid, out var gameInstance))
         {
             gameInstance.RemoveUser(userId);
+            
+            foreach (var user in gameInstance.GameUsers)
+                userGamesPool.TryRemove(user.UserId, out _);
+            
             gamesPool.TryRemove(gameGuid, out _);
         }
-
-        userGamesPool.TryRemove(userId, out _);
     }
 
     private GameInstance? GetUserGameInstance(long userId)
