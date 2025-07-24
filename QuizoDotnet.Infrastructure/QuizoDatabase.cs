@@ -16,6 +16,7 @@ public class QuizoDatabase(DbContextOptions options) : BaseContext(options)
 
     public DbSet<User> Users { get; init; }
     public DbSet<UserProfile> UserProfiles { get; init; }
+    public DbSet<UserScore> UserScores { get; init; }
     public DbSet<Category> Categories { get; init; }
     public DbSet<Question> Questions { get; init; }
     public DbSet<QuestionAnswer> QuestionAnswers { get; init; }

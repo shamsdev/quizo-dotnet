@@ -1,6 +1,7 @@
 using QuizoDotnet.Application.DTOs;
 using QuizoDotnet.Application.DTOs.Game;
 using QuizoDotnet.Application.Interfaces;
+using QuizoDotnet.Application.Logic.Game.Bot;
 using QuizoDotnet.Application.Services;
 
 // ReSharper disable InconsistentlySynchronizedField
@@ -205,7 +206,7 @@ public class GameInstance
         GameFinish();
     }
 
-    private void GameFinish()
+    private async void GameFinish()
     {
         foreach (var user in GameUsers)
         {
@@ -221,6 +222,9 @@ public class GameInstance
                 Score = user.Score,
                 OpponentLeft = opponent == null
             };
+
+            if (user is not BotGameUser && user.Score > 0)
+                await gameDataService.AddScore(user.UserId, user.Score);
             
             gameBroadcaster.SendMatchResult(user, matchResultDto);
         }

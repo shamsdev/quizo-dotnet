@@ -5,6 +5,7 @@ using Npgsql;
 using QuizoDotnet.Application.Interfaces.Repositories.Users;
 using QuizoDotnet.Application.Interfaces.Repositories.Game;
 using QuizoDotnet.Infrastructure.Repositories;
+using QuizoDotnet.Infrastructure.Repositories.Game;
 
 namespace QuizoDotnet.Infrastructure.Extensions;
 
@@ -25,9 +26,10 @@ public static class ServiceCollectionExtensions
         services
             .AddScoped<IUserRepository, UserRepository>()
             .AddScoped<IUserProfileRepository, UserProfileRepository>()
-            .AddScoped<ICategoryRepository, Repositories.Game.CategoryRepository>()
-            .AddScoped<IQuestionRepository, Repositories.Game.QuestionRepository>()
-            .AddScoped<IQuestionAnswerRepository, Repositories.Game.QuestionAnswerRepository>()
+            .AddScoped<IUserScoreRepository, UserScoreRepository>()
+            .AddScoped<ICategoryRepository, CategoryRepository>()
+            .AddScoped<IQuestionRepository, QuestionRepository>()
+            .AddScoped<IQuestionAnswerRepository, QuestionAnswerRepository>()
             ;
 
         return services;

@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using QuizoDotnet.Application.Interfaces.Repositories.Game;
 using QuizoDotnet.Application.Interfaces.Repositories.Users;
 using QuizoDotnet.Application.Logic.Game.Bot;
+using QuizoDotnet.Application.Services;
 using QuizoDotnet.Domain.Models.Questions;
 using QuizoDotnet.Domain.Models.Users;
 
@@ -31,5 +32,12 @@ public class GameDataService(IServiceProvider serviceProvider)
         using var scope = serviceProvider.CreateScope();
         var userProfileRepository = scope.ServiceProvider.GetRequiredService<IUserProfileRepository>();
         return await userProfileRepository.GetByUserId(user.UserId);
+    }
+
+    public async Task AddScore(long userId, int score)
+    {
+        using var scope = serviceProvider.CreateScope();
+        var userScoreService = scope.ServiceProvider.GetRequiredService<UserScoreService>();
+        await userScoreService.AddScore(userId, score);
     }
 }

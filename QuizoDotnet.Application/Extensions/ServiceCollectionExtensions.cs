@@ -10,6 +10,7 @@ public static class ServiceCollectionExtensions
         services
             .AddSingleton<TokenService>()
             .AddScoped<UserService>()
+            .AddScoped<UserScoreService>()
             .AddSingleton<MatchMakeService>()
             .AddSingleton<GameService>()
             ;
