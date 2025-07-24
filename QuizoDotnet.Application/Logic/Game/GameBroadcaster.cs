@@ -12,6 +12,7 @@ public class GameBroadcaster(IClientCallService clientCallService, GameState gam
     public const string GetReadyCommand = "match/get-ready";
     public const string StartRoundCommand = "match/start-round";
     public const string RoundResultCommand = "match/round-result";
+    public const string MatchResultCommand = "match/result";
 
     #endregion
 
@@ -48,5 +49,10 @@ public class GameBroadcaster(IClientCallService clientCallService, GameState gam
     public void SendRoundResult(RoundResultDto data)
     {
         SendAll(RoundResultCommand, data);
+    }
+
+    public void SendMatchResult(GameUser user, MatchResultDto data)
+    {
+        Send(user, MatchResultCommand, data);
     }
 }

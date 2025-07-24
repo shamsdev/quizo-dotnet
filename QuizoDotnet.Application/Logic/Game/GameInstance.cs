@@ -198,18 +198,34 @@ public class GameInstance
         return Task.CompletedTask;
     }
 
-    private void GameFinish()
-    {
-        Console.WriteLine($"[GameInstance | {Guid}] Game finished.");
-        GameClose();
-    }
-
     public void RemoveUser(long userId)
     {
         gameState.GameUsersDict.Remove(userId);
         Console.WriteLine($"[GameInstance | {Guid}] User {userId} removed.");
+        GameFinish();
+    }
 
-        //TODO send opponent finish data
+    private void GameFinish()
+    {
+        foreach (var user in GameUsers)
+        {
+            var opponent = GameUsers.FirstOrDefault(x => x.UserId != user.UserId);
+            var matchResultDto = new MatchResultDto
+            {
+                MatchState = opponent == null
+                    ? MatchResultDto.State.Win // Opponent Left the game
+                    : (
+                        user.Score == opponent.Score ? MatchResultDto.State.Draw :
+                        user.Score > opponent.Score ? MatchResultDto.State.Win : MatchResultDto.State.Lose
+                    ),
+                Score = user.Score,
+                OpponentLeft = opponent == null
+            };
+            
+            gameBroadcaster.SendMatchResult(user, matchResultDto);
+        }
+
+        Console.WriteLine($"[GameInstance | {Guid}] Game finished.");
         GameClose();
     }
 
