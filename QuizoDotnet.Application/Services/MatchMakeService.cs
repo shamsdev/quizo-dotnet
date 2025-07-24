@@ -11,7 +11,7 @@ public class MatchMakeService(GameService gameService)
     private readonly ConcurrentDictionary<long, Requester> matchMakingPool = new();
     private readonly object matchMakingLock = new();
 
-    private const bool UseBot = false;
+    private const bool UseBot = true;
 
     public void Join(long userId, string connectionId)
     {
@@ -32,8 +32,8 @@ public class MatchMakeService(GameService gameService)
 
     public void Leave(long userId)
     {
-        matchMakingPool.TryRemove(userId, out _);
-        Console.WriteLine($"[MatchMakeService] User with Id '{userId}' left match-make.");
+        if (matchMakingPool.TryRemove(userId, out _))
+            Console.WriteLine($"[MatchMakeService] User with Id '{userId}' left match-make.");
     }
 
     private void TryMatchMake()

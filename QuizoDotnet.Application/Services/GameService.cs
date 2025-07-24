@@ -46,8 +46,8 @@ public class GameService(
     public void RemoveUser(long userId)
     {
         userGamesPool.TryRemove(userId, out var gameGuid);
-        gamesPool.TryGetValue(gameGuid, out var gameInstance);
-        gameInstance!.RemoveUser(userId);
+        if (gamesPool.TryGetValue(gameGuid, out var gameInstance))
+            gameInstance!.RemoveUser(userId);
     }
 
     public void DisposeGame(GameInstance gameInstance)

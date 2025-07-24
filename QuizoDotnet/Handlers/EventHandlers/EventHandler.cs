@@ -7,7 +7,8 @@ namespace QuizoDotnet.Handlers.EventHandlers;
 [EventHandler]
 public class EventHandler(
     ILogger<EventHandler> logger,
-    GameService gameService) : BaseEventHandler
+    GameService gameService,
+    MatchMakeService matchMakeService) : BaseEventHandler
 {
     private long UserId => ConnectionContext.GetAuthorizationId<long>();
 
@@ -20,6 +21,7 @@ public class EventHandler(
     public override Task OnDisconnected(Exception? exception)
     {
         logger.LogInformation($"Connection {ConnectionContext.ConnectionId} disconnected.");
+        matchMakeService.Leave(UserId);
         gameService.RemoveUser(UserId);
         return Task.CompletedTask;
     }
