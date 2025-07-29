@@ -2,6 +2,7 @@ namespace QuizoDotnet.Application.DTOs;
 
 public class UserProfileDto
 {
-    public string Avatar { get; init; }
-    public string? DisplayName { get; set; }
+    public long UserId { get; init; }
+    public string Avatar { get; init; } = null!;
+    public string? DisplayName { get; init; }
 }

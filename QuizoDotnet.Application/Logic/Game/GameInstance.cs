@@ -70,6 +70,7 @@ public class GameInstance
                     UserId = opponent.UserId,
                     UserProfile = new UserProfileDto
                     {
+                        UserId = opponent.UserId,
                         Avatar = opponentProfile!.Avatar,
                         DisplayName = opponentProfile.DisplayName
                     }
@@ -225,7 +226,7 @@ public class GameInstance
 
             if (user is not BotGameUser && user.Score > 0)
                 await gameDataService.AddScore(user.UserId, user.Score);
-            
+
             gameBroadcaster.SendMatchResult(user, matchResultDto);
         }
 

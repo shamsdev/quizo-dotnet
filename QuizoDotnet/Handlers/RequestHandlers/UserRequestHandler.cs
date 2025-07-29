@@ -49,6 +49,7 @@ public class UserRequestHandler(
                 UserId = user.Id,
                 UserProfile = new UserProfileDto
                 {
+                    UserId = user.Id,
                     Avatar = user.UserProfile.Avatar,
                     DisplayName = user.UserProfile.DisplayName
                 }
@@ -69,6 +70,7 @@ public class UserRequestHandler(
 
         return new UserProfileDto
         {
+            UserId = userProfile.UserId,
             Avatar = userProfile.Avatar,
             DisplayName = userProfile.DisplayName
         };

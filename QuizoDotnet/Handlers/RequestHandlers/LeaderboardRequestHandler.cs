@@ -19,6 +19,7 @@ public class LeaderboardRequestHandler(
             Score = score.Score,
             UserProfile = new UserProfileDto
             {
+                UserId = score.UserId,
                 Avatar = score.User.UserProfile.Avatar,
                 DisplayName = score.User.UserProfile.DisplayName,
             }
