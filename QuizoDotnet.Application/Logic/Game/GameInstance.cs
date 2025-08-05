@@ -24,10 +24,10 @@ public class GameInstance
 
     #region Constants and Configs
 
-    private const int RoundCount = 2;
+    private const int RoundCount = 5;
     private const int StartRoundDelayMs = 2 * 1000;
     private const int ShowResultDurationMs = 3 * 1000;
-    private const int RoundTimeMs = 5 * 1000;
+    private const int RoundTimeMs = 15 * 1000;
 
     #endregion
 
