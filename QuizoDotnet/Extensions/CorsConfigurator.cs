@@ -21,7 +21,7 @@ public static class CorsConfigurator
             options.AddPolicy(ProductionPolicyName, policyBuilder =>
             {
                 policyBuilder
-                    .WithOrigins("https://ludo.karizmastudio.com")
+                    .WithOrigins("https://quizo.shamsdev.com")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();

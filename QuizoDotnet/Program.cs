@@ -28,7 +28,7 @@ builder.Services.AddSingleton<IClientCallService, ClientCallService>();
 builder.Services.AddApplicationServices();
 
 var app = builder.Build();
-app.ConfigureCors();
+//app.ConfigureCors();
 
 if (app.Environment.IsDevelopment())
 {
