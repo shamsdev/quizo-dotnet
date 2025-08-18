@@ -11,20 +11,18 @@ public class MatchMakeService(GameService gameService)
     private readonly ConcurrentDictionary<long, Requester> matchMakingPool = new();
     private readonly object matchMakingLock = new();
 
-    private const bool UseBot = false;
+    private CancellationTokenSource? matchBotCancellationTokenSource;
+    private const int MatchBotAfterSeconds = 8;
 
     public void Join(long userId, string connectionId)
     {
         var requester = new Requester(userId, connectionId);
 
-        if (UseBot)
+        lock (matchMakingLock)
         {
-            CreateBotGame(requester);
-            return;
+            if (!matchMakingPool.TryAdd(userId, requester))
+                return; // Already in pool
         }
-
-        if (!matchMakingPool.TryAdd(userId, requester))
-            return; // Already in pool
 
         Console.WriteLine($"[MatchMakeService] User with Id '{requester.UserId}' joined match-make.");
         TryMatchMake();
@@ -32,8 +30,14 @@ public class MatchMakeService(GameService gameService)
 
     public void Leave(long userId)
     {
-        if (matchMakingPool.TryRemove(userId, out _))
-            Console.WriteLine($"[MatchMakeService] User with Id '{userId}' left match-make.");
+        lock (matchMakingLock)
+        {
+            if (matchMakingPool.TryRemove(userId, out _))
+                Console.WriteLine($"[MatchMakeService] User with Id '{userId}' left match-make.");
+
+            if (matchMakingPool.IsEmpty)
+                matchBotCancellationTokenSource?.Cancel();
+        }
     }
 
     private void TryMatchMake()
@@ -56,6 +60,35 @@ public class MatchMakeService(GameService gameService)
 
                 CreateGame(player1, player2);
             }
+        }
+
+        TryBotMatchMake();
+    }
+
+    private async void TryBotMatchMake()
+    {
+        matchBotCancellationTokenSource?.Cancel();
+        matchBotCancellationTokenSource = new CancellationTokenSource();
+
+        try
+        {
+            await Task.Delay(MatchBotAfterSeconds * 1000, matchBotCancellationTokenSource.Token);
+
+            lock (matchMakingLock)
+            {
+                var (_, requester) = matchMakingPool.ElementAtOrDefault(0);
+
+                if (requester == null)
+                    return;
+
+                matchMakingPool.TryRemove(requester.UserId, out _);
+
+                CreateBotGame(requester);
+            }
+        }
+        catch
+        {
+            // ignored
         }
     }
 
