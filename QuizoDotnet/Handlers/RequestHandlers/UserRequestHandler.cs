@@ -9,6 +9,8 @@ namespace QuizoDotnet.Handlers.RequestHandlers;
 [RequestHandler("user")]
 public class UserRequestHandler(
     UserService userService,
+    UserResourceService userResourceService,
+    UserEnergyService userEnergyService,
     TokenService tokenService) : BaseRequestHandler
 {
     private long UserId => ConnectionContext.GetAuthorizationId<long>();
@@ -41,6 +43,7 @@ public class UserRequestHandler(
         var user = userResult.Result!;
         ConnectionContext.SetAuthorizationId(user.Id);
 
+        //TODO profile should delete from here and add to home data
         return new SignInDataDto
         {
             ServerTime = DateTimeOffset.Now,
@@ -53,7 +56,7 @@ public class UserRequestHandler(
                     Avatar = user.UserProfile.Avatar,
                     DisplayName = user.UserProfile.DisplayName
                 }
-            }
+            },
         };
     }
 
@@ -73,6 +76,33 @@ public class UserRequestHandler(
             UserId = userProfile.UserId,
             Avatar = userProfile.Avatar,
             DisplayName = userProfile.DisplayName
+        };
+    }
+
+    [Action("get-home-data")]
+    public async Task<HomeDataDto> GetHomeData()
+    {
+        var userResourceTask =
+            userResourceService.Get(UserId);
+
+        var userEnergyTask =
+            userEnergyService.Get(UserId);
+
+        await Task.WhenAll(userResourceTask, userEnergyTask);
+
+        return new HomeDataDto
+        {
+            UserResource = new UserResourceDto
+            {
+                Xp = userResourceTask.Result.Xp,
+                Coin = userResourceTask.Result.Coin,
+            },
+
+            UserEnergy = new UserEnergyDto
+            {
+                Amount = userEnergyTask.Result.Amount,
+                NextGenerationAt = userEnergyTask.Result.NextGenerationAt,
+            }
         };
     }
 }

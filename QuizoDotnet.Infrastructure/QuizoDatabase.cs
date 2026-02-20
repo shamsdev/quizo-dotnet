@@ -21,6 +21,9 @@ public class QuizoDatabase(DbContextOptions options) : BaseContext(options)
     public DbSet<Question> Questions { get; init; }
     public DbSet<QuestionAnswer> QuestionAnswers { get; init; }
 
+    public DbSet<UserResource> UserResources { get; init; }
+    public DbSet<UserEnergy> UserEnergies { get; init; }
+
     public QuizoDatabase() : this(new DbContextOptionsBuilder<QuizoDatabase>()
         .UseNpgsql(PostgresConnectionString).Options)
     {

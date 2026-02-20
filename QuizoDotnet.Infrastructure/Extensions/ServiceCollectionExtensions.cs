@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using QuizoDotnet.Application.Interfaces.Repositories.Users;
 using QuizoDotnet.Application.Interfaces.Repositories.Game;
+using QuizoDotnet.Domain.Models.Users;
 using QuizoDotnet.Infrastructure.Repositories;
 using QuizoDotnet.Infrastructure.Repositories.Game;
 
@@ -30,6 +31,8 @@ public static class ServiceCollectionExtensions
             .AddScoped<ICategoryRepository, CategoryRepository>()
             .AddScoped<IQuestionRepository, QuestionRepository>()
             .AddScoped<IQuestionAnswerRepository, QuestionAnswerRepository>()
+            .AddScoped<IUserResourceRepository, UserResourceRepository>()
+            .AddScoped<IUserEnergyRepository, UserEnergyRepository>()
             ;
 
         return services;
