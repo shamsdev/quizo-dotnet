@@ -86,7 +86,7 @@ public class UserRequestHandler(
             userResourceService.Get(UserId);
 
         var userEnergyTask =
-            userEnergyService.Get(UserId);
+            userEnergyService.CalculateEnergy(UserId);
 
         await Task.WhenAll(userResourceTask, userEnergyTask);
 

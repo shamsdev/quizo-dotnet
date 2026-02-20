@@ -10,7 +10,7 @@ public class UserResourceRepository(QuizoDatabase database)
 {
     public async Task<UserResource> Get(long userId)
     {
-        var userResource = await database.UserResources.SingleOrDefaultAsync(x => x.UserId == userId);
+        var userResource = await database.UserResources.SingleOrDefaultAsync(x => x.UserId == userId && x.DeletedDate == null);
         
         if (userResource != null) 
             return userResource;

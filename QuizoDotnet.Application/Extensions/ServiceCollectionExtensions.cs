@@ -13,8 +13,8 @@ public static class ServiceCollectionExtensions
             .AddScoped<UserScoreService>()
             .AddSingleton<MatchMakeService>()
             .AddSingleton<GameService>()
-            .AddSingleton<UserResourceService>()
-            .AddSingleton<UserEnergyService>()
+            .AddScoped<UserResourceService>()
+            .AddScoped<UserEnergyService>()
             ;
 
         return services;

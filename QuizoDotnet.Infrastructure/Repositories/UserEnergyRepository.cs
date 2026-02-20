@@ -10,7 +10,7 @@ public class UserEnergyRepository(QuizoDatabase database)
 {
     public async Task<UserEnergy> Get(long userId)
     {
-        var userEnergy = await database.UserEnergies.SingleOrDefaultAsync(x => x.UserId == userId);
+        var userEnergy = await database.UserEnergies.SingleOrDefaultAsync(x => x.UserId == userId && x.DeletedDate == null);
         
         if (userEnergy != null) 
             return userEnergy;

@@ -5,23 +5,18 @@ namespace QuizoDotnet.Application.Services;
 
 public class UserEnergyService(IUserEnergyRepository userEnergyRepository)
 {
-    public async Task<UserEnergy> Get(long userId)
-    {
-        return await userEnergyRepository.Get(userId);
-    }
-    
-    private async Task<UserEnergy> CalculateEnergy(long userId)
+    public async Task<UserEnergy> CalculateEnergy(long userId)
     {
         var userEnergy = await userEnergyRepository.Get(userId);
 
         if (userEnergy.Amount >= UserEnergy.MAX_ENERGY)
         {
-            userEnergy.LastEnergyUpdatedAt = DateTime.UtcNow;
+            userEnergy.LastEnergyUpdatedAt = DateTimeOffset.UtcNow;
             await userEnergyRepository.Update(userEnergy);
             return userEnergy;
         }
 
-        var now = DateTime.UtcNow;
+        var now = DateTimeOffset.UtcNow;
         var secondsPassed = (now - userEnergy.LastEnergyUpdatedAt).TotalSeconds;
 
         var energyToAdd = (int)(secondsPassed / UserEnergy.SECONDS_PER_ENERGY);
@@ -30,9 +25,8 @@ public class UserEnergyService(IUserEnergyRepository userEnergyRepository)
         {
             userEnergy.Amount = Math.Min(UserEnergy.MAX_ENERGY, userEnergy.Amount + energyToAdd);
 
-            // Move forward only the consumed time
             userEnergy.LastEnergyUpdatedAt = userEnergy.LastEnergyUpdatedAt
-                .AddMinutes(energyToAdd * UserEnergy.SECONDS_PER_ENERGY);
+                .AddSeconds(energyToAdd * UserEnergy.SECONDS_PER_ENERGY);
 
             await userEnergyRepository.Update(userEnergy);
         }
@@ -45,7 +39,7 @@ public class UserEnergyService(IUserEnergyRepository userEnergyRepository)
         var userEnergy = await CalculateEnergy(userId);
 
         if (userEnergy.Amount <= 0)
-            throw new Exception($"User with id {userId} does not have enough energy to consume.");
+            throw new InvalidOperationException($"User with id {userId} does not have enough energy to consume.");
 
         userEnergy.Amount--;
         await userEnergyRepository.Update(userEnergy);

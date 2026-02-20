@@ -15,7 +15,7 @@ public class UserResourceService(IUserResourceRepository userResourceRepository)
         var userResource = await userResourceRepository.Get(userId);
         
         if (userResource.Coin + amount < 0)
-            throw new Exception($"User with id {userId} does not have enough coins");
+            throw new InvalidOperationException($"User with id {userId} does not have enough coins");
         
         userResource.Coin += amount;
         await userResourceRepository.Update(userResource);
