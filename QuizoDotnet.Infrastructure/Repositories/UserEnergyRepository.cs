@@ -20,7 +20,7 @@ public class UserEnergyRepository(QuizoDatabase database)
         {
             UserId = userId,
             Amount = UserEnergy.MAX_ENERGY,
-            LastEnergyUpdatedAt = DateTimeOffset.Now,
+            LastEnergyUpdatedAt = DateTimeOffset.UtcNow,
         };
 
         database.UserEnergies.Add(userEnergy);

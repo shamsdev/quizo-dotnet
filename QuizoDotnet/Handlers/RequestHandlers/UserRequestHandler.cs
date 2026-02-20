@@ -82,26 +82,21 @@ public class UserRequestHandler(
     [Action("get-home-data")]
     public async Task<HomeDataDto> GetHomeData()
     {
-        var userResourceTask =
-            userResourceService.Get(UserId);
-
-        var userEnergyTask =
-            userEnergyService.CalculateEnergy(UserId);
-
-        await Task.WhenAll(userResourceTask, userEnergyTask);
+        // Sequential to avoid concurrent use of the same scoped DbContext
+        var userResource = await userResourceService.Get(UserId);
+        var userEnergy = await userEnergyService.CalculateEnergy(UserId);
 
         return new HomeDataDto
         {
             UserResource = new UserResourceDto
             {
-                Xp = userResourceTask.Result.Xp,
-                Coin = userResourceTask.Result.Coin,
+                Xp = userResource.Xp,
+                Coin = userResource.Coin,
             },
-
             UserEnergy = new UserEnergyDto
             {
-                Amount = userEnergyTask.Result.Amount,
-                NextGenerationAt = userEnergyTask.Result.NextGenerationAt,
+                Amount = userEnergy.Amount,
+                NextGenerationAt = userEnergy.NextGenerationAt,
             }
         };
     }
