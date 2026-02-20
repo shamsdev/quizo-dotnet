@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using Microsoft.Extensions.DependencyInjection;
 using QuizoDotnet.Application.Interfaces;
 using QuizoDotnet.Application.Logic.Game;
 
@@ -13,6 +14,15 @@ public class GameService(
 
     public void CreateGame(GameUser u1, GameUser u2)
     {
+        using var scope = serviceProvider.CreateScope();
+        var energyService = scope.ServiceProvider.GetRequiredService<UserEnergyService>();
+
+        foreach (var userId in new[] { u1.UserId, u2.UserId })
+        {
+            if (userId > 0)
+                energyService.Consume(userId).GetAwaiter().GetResult();
+        }
+
         var gameGuid = Guid.NewGuid();
 
         var gameInstance = new GameInstance(

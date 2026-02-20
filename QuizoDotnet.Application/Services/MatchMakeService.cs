@@ -12,7 +12,7 @@ public class MatchMakeService(GameService gameService)
     private readonly object matchMakingLock = new();
 
     private CancellationTokenSource? matchBotCancellationTokenSource;
-    private const int MatchBotAfterSeconds = 8;
+    private const int MatchBotAfterSeconds = 1;
 
     public void Join(long userId, string connectionId)
     {
@@ -58,7 +58,16 @@ public class MatchMakeService(GameService gameService)
                 matchMakingPool.TryRemove(player1.UserId, out _);
                 matchMakingPool.TryRemove(player2.UserId, out _);
 
-                CreateGame(player1, player2);
+                try
+                {
+                    CreateGame(player1, player2);
+                }
+                catch
+                {
+                    matchMakingPool.TryAdd(player1.UserId, player1);
+                    matchMakingPool.TryAdd(player2.UserId, player2);
+                    throw;
+                }
             }
         }
 
@@ -83,7 +92,15 @@ public class MatchMakeService(GameService gameService)
 
                 matchMakingPool.TryRemove(requester.UserId, out _);
 
-                CreateBotGame(requester);
+                try
+                {
+                    CreateBotGame(requester);
+                }
+                catch
+                {
+                    matchMakingPool.TryAdd(requester.UserId, requester);
+                    throw;
+                }
             }
         }
         catch

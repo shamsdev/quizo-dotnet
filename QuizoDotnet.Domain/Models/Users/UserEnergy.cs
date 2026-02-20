@@ -8,7 +8,7 @@ namespace QuizoDotnet.Domain.Models.Users;
 public class UserEnergy : BaseEntity
 {
     public const int MAX_ENERGY = 5;
-    public const int SECONDS_PER_ENERGY = 10;
+    public const int SECONDS_PER_ENERGY = 300;
 
     [Column("user_id"), Required] public long UserId { get; init; }
 
