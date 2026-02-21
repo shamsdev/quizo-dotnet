@@ -100,4 +100,15 @@ public class UserRequestHandler(
             }
         };
     }
+
+    [Action("get-energies")]
+    public async Task<UserEnergyDto> GetEnergies()
+    {
+        var userEnergy = await userEnergyService.CalculateEnergy(UserId);
+        return new UserEnergyDto
+        {
+            Amount = userEnergy.Amount,
+            NextGenerationAt = userEnergy.NextGenerationAt,
+        };
+    }
 }
